@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Sniglet:wght@400;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Jua", sans-serif;
+  --font-display: "Sniglet", system-ui, sans-serif;
+}
+
+:root {
+  --background: #FFD1DC;
+  --foreground: #4a4a4a;
+  --neon-green: #39FF14;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+}
+
+.glass-hover:hover {
+  background: rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.petal {
+  position: absolute;
+  background-color: #ffb7c5;
+  border-radius: 150% 0 150% 0;
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes fall {
+  0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+
+.animate-fall {
+  animation: fall linear infinite;
+}
