@@ -98,6 +98,25 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-12 md:py-20 relative overflow-hidden">
+      {/* Top Left Header Icon */}
+      <div className="absolute top-6 left-6 z-20 flex items-center gap-3">
+        <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-black shadow-md bg-[#D8B4FE] overflow-hidden flex items-center justify-center relative">
+          <svg viewBox="0 0 100 100" className="w-full h-full">
+            <circle cx="50" cy="50" r="48" fill="#D8B4FE" stroke="black" strokeWidth="4" />
+            <path d="M25 25 Q15 5 35 15" fill="#D8B4FE" stroke="black" strokeWidth="4" />
+            <path d="M75 25 Q85 5 65 15" fill="#D8B4FE" stroke="black" strokeWidth="4" />
+            <rect x="20" y="40" width="60" height="20" rx="4" fill="black" />
+            <circle cx="35" cy="50" r="3.5" fill="white" />
+            <circle cx="65" cy="50" r="3.5" fill="white" />
+            <ellipse cx="50" cy="70" rx="16" ry="12" fill="#F9A8D4" stroke="black" strokeWidth="4" />
+            <circle cx="42" cy="70" r="3" fill="black" />
+            <circle cx="58" cy="70" r="3" fill="black" />
+            <rect x="75" y="15" width="8" height="35" transform="rotate(35 75 15)" fill="#475569" stroke="black" strokeWidth="3" />
+          </svg>
+        </div>
+        <span className="font-black text-red-500 text-sm md:text-base drop-shadow-sm hidden sm:block">Buri Buri Zaimon</span>
+      </div>
+
       {/* Petal Decorations */}
       {petals.map((petal) => (
         <div

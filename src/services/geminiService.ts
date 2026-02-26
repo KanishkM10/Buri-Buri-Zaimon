@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 
 const getAI = () => {
-  const apiKey = 'AIzaSyBPt3aQ9iNwYUb_x9ytyw2CHTR95pYA5Wg';
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     throw new Error("GEMINI_API_KEY is not defined");
   }
@@ -45,11 +45,25 @@ export async function generateImage(prompt: string, aspectRatio: string = "1:1")
     }
   }
 
+  const facialDiversityInstruction = `
+  Facial Diversity Rules:
+  1. 'Shinchan anime style' refers to the overall aesthetic (thick wobbly lines, flat colors), NOT just Shinnosuke’s face.
+  2. Assign unique facial features to each character:
+     - Varying head shapes: round, oval, square, 'onigiri' triangle.
+     - Different eye styles: dot eyes, large sparkly eyes, squinted eyes, as seen in the wider Yoshito Usui universe.
+  3. Ensure each character in the scene has a distinct, unique face and hairstyle. 
+  4. Do NOT repeat the protagonist's (Shinnosuke) face on other boys or girls unless specifically requested.
+  `;
+
   let finalPrompt = '';
   if (foundCharacter) {
-    finalPrompt = `${prompt} as a character in the world of Kasukabe. Character details:${contextDescription}. Style: 1990s Japanese comedy anime, thick wobbly hand-drawn outlines, flat matte colors, minimalist facial features, tiny eyes, wide mouths, Yoshito Usui aesthetic. Do NOT include the character Shinnosuke unless specifically asked.`;
+    finalPrompt = `${prompt} as a character in the world of Kasukabe. Character details:${contextDescription}. 
+    Style: 1990s Japanese comedy anime, thick wobbly hand-drawn outlines, flat matte colors, minimalist facial features, tiny eyes, wide mouths, Yoshito Usui aesthetic. 
+    ${facialDiversityInstruction}`;
   } else {
-    finalPrompt = `${prompt} as a character in the world of Kasukabe. Style: 1990s Yoshito Usui art style: wobbly thick outlines, flat colors, and minimalist facial features. Do NOT default to Shinchan's face. Do NOT include the character Shinnosuke unless specifically asked.`;
+    finalPrompt = `${prompt} as a character in the world of Kasukabe. 
+    Style: 1990s Yoshito Usui art style: wobbly thick outlines, flat colors, and minimalist facial features. 
+    ${facialDiversityInstruction}`;
   }
   
   // Using gemini-2.5-flash-image as it's the most reliable "Nano Banana" model for general use
@@ -65,7 +79,7 @@ export async function generateImage(prompt: string, aspectRatio: string = "1:1")
       imageConfig: {
         aspectRatio: aspectRatio as any,
         // @ts-ignore - Adding negative prompt as requested, though it might not be in the base type definition
-        negativePrompt: "Realistic, 3D, high-detail, Shinnosuke Nohara face, red shirt and yellow shorts, protagonist face.",
+        negativePrompt: "Realistic, 3D, high-detail, Shinnosuke Nohara face, red shirt and yellow shorts, protagonist face, repetitive faces, same face syndrome.",
       }
     }
   });
