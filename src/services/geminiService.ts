@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 
 const getAI = () => {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = 'AIzaSyBPt3aQ9iNwYUb_x9ytyw2CHTR95pYA5Wg';
   if (!apiKey) {
     throw new Error("GEMINI_API_KEY is not defined");
   }
