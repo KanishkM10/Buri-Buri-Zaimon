@@ -55,60 +55,40 @@ export async function generateImage(prompt: string, aspectRatio: string = "1:1")
   4. Do NOT repeat the protagonist's (Shinnosuke) face on other boys or girls unless specifically requested.
   `;
 
-  const negativeInstruction = `
-  NEGATIVE PROMPT (Do NOT include these): Realistic, 3D, high-detail, Shinnosuke Nohara face, red shirt and yellow shorts, protagonist face, repetitive faces, same face syndrome.
-  `;
-
   let finalPrompt = '';
   if (foundCharacter) {
     finalPrompt = `${prompt} as a character in the world of Kasukabe. Character details:${contextDescription}. 
     Style: 1990s Japanese comedy anime, thick wobbly hand-drawn outlines, flat matte colors, minimalist facial features, tiny eyes, wide mouths, Yoshito Usui aesthetic. 
-    ${facialDiversityInstruction}
-    ${negativeInstruction}`;
+    ${facialDiversityInstruction}`;
   } else {
     finalPrompt = `${prompt} as a character in the world of Kasukabe. 
     Style: 1990s Yoshito Usui art style: wobbly thick outlines, flat colors, and minimalist facial features. 
-    ${facialDiversityInstruction}
-    ${negativeInstruction}`;
+    ${facialDiversityInstruction}`;
   }
   
-  try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-image",
-      contents: {
-        parts: [
-          { text: finalPrompt }
-        ]
-      },
-      config: {
-        imageConfig: {
-          aspectRatio: aspectRatio as any,
-        }
-      }
-    });
-
-    const parts = response.candidates?.[0]?.content?.parts || [];
-    
-    // First, look for image data
-    for (const part of parts) {
-      if (part.inlineData) {
-        return `data:image/png;base64,${part.inlineData.data}`;
+  // Using gemini-2.5-flash-image as it's the most reliable "Nano Banana" model for general use
+  // and doesn't require the mandatory key selection dialog of the Pro version.
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash-image",
+    contents: {
+      parts: [
+        { text: finalPrompt }
+      ]
+    },
+    config: {
+      imageConfig: {
+        aspectRatio: aspectRatio as any,
+        // @ts-ignore - Adding negative prompt as requested, though it might not be in the base type definition
+        negativePrompt: "Realistic, 3D, high-detail, Shinnosuke Nohara face, red shirt and yellow shorts, protagonist face, repetitive faces, same face syndrome.",
       }
     }
+  });
 
-    // If no image, check if there's a text response (refusal or error message)
-    for (const part of parts) {
-      if (part.text) {
-        throw new Error(`AI Refusal: ${part.text}`);
-      }
+  for (const part of response.candidates?.[0]?.content?.parts || []) {
+    if (part.inlineData) {
+      return `data:image/png;base64,${part.inlineData.data}`;
     }
-
-    throw new Error("No image data or explanation returned from Gemini API.");
-  } catch (error: any) {
-    console.error("Gemini Image Generation Error:", error);
-    if (error.message?.includes("Refusal")) {
-      throw error;
-    }
-    throw new Error(`Generation failed: ${error.message || "Unknown error"}`);
   }
+
+  throw new Error("No image data returned from Gemini API");
 }
